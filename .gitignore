@@ -1,0 +1,29 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# .NET build output
+**/bin/
+**/obj/
+.dotnet-home/
+
+# Runtime media/storage
+/storage/
+/Amas.Api/storage/
+
+# Tooling and reports
+TestResults/
+coverage/
+*.log
+
+# IDE/editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# System files
+.DS_Store
+Thumbs.db
