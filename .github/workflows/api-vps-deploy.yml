@@ -116,7 +116,7 @@ jobs:
             -v \"\$PWD:/src\" \
             -w /src \
             mcr.microsoft.com/dotnet/sdk:10.0 \
-            bash -lc 'dotnet restore Amas.slnx && dotnet tool install --global dotnet-ef --version 10.0.4 && export PATH=\"\$PATH:/root/.dotnet/tools\" && dotnet ef database update --project Amas.Infrastructure --startup-project Amas.Api --no-restore'"
+            bash -lc 'dotnet restore Amas.slnx && dotnet tool install --global dotnet-ef --version 10.0.4 && export PATH="$PATH:/root/.dotnet/tools" && dotnet ef database update --project Amas.Infrastructure --startup-project Amas.Api'
 
       - name: Deploy container
         env:
