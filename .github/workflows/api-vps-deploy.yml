@@ -147,6 +147,19 @@ jobs:
             cd '$VPS_API_DIR' &&
 
             docker compose up -d --build --remove-orphans &&
-            docker image prune -f &&
-            curl -fsS http://localhost:8080/health
+            docker image prune -f
+
+            for attempt in \$(seq 1 30); do
+              if curl -fsS http://localhost:8080/health; then
+                exit 0
+              fi
+
+              echo \"Waiting for API health check... attempt \$attempt/30\"
+              docker ps --filter name=amas-api --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+              sleep 3
+            done
+
+            echo 'API did not become healthy. Last container logs:'
+            docker logs --tail 120 amas-api
+            exit 1
           "
