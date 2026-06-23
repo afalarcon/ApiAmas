@@ -132,8 +132,7 @@ jobs:
                 export PATH=\"\$PATH:/root/.dotnet/tools\" &&
                 dotnet ef database update \
                   --project Amas.Infrastructure \
-                  --startup-project Amas.Api \
-                  --no-restore
+                  --startup-project Amas.Api
               '
           "
 
