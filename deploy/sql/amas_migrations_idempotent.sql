@@ -1490,3 +1490,21 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260623004815_AlignContactRequestNumberIdentity') THEN
+    ALTER TABLE core.contact_requests ALTER COLUMN "ContactRequestNumber" RESTART WITH 1001;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260623004815_AlignContactRequestNumberIdentity') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260623004815_AlignContactRequestNumberIdentity', '10.0.4');
+    END IF;
+END $EF$;
+COMMIT;
+
