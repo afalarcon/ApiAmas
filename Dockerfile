@@ -5,6 +5,7 @@ COPY Amas.Api/Amas.Api.csproj Amas.Api/
 COPY Amas.Application/Amas.Application.csproj Amas.Application/
 COPY Amas.Domain/Amas.Domain.csproj Amas.Domain/
 COPY Amas.Infrastructure/Amas.Infrastructure.csproj Amas.Infrastructure/
+COPY Amas.Api.Tests/Amas.Api.Tests.csproj Amas.Api.Tests/
 
 RUN dotnet restore Amas.Api/Amas.Api.csproj
 
