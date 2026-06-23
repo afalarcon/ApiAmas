@@ -10,7 +10,7 @@ public sealed class AmasDbContextFactory : IDesignTimeDbContextFactory<AmasDbCon
         LoadDotEnv();
 
         var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Postgres")
-            ?? "Host=localhost;Port=5432;Database=amas_core;Username=amas_user;Password=amas_password";
+            ?? "Host=localhost;Port=55432;Database=amas_local;Username=amas_local_user;Password=amas_local_password";
 
         var options = new DbContextOptionsBuilder<AmasDbContext>()
             .UseNpgsql(connectionString)

@@ -5,6 +5,7 @@ using Amas.Api.Contracts;
 using Amas.Api.Options;
 using Amas.Application.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -18,6 +19,7 @@ public sealed class AuthController(
     IOptions<JwtOptions> jwtOptions) : ControllerBase
 {
     [HttpPost("login")]
+    [EnableRateLimiting("auth-login")]
     public async Task<ActionResult<ApiResponse<LoginResponse>>> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         var authenticated = await identity.AuthenticateAsync(request.Email, request.Password, cancellationToken);
