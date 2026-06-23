@@ -39,17 +39,37 @@ public sealed class CatalogService(
         return Result<IReadOnlyList<CatalogImagesGroupDto>>.Success(images);
     }
 
+    public async Task<Result<IReadOnlyList<CatalogProductDto>>> ListProductsAsync(Guid? categoryId, CancellationToken cancellationToken)
+    {
+        var cacheKey = categoryId.HasValue
+            ? CacheKeys.CatalogProductsByCategory(categoryId.Value)
+            : CacheKeys.CatalogProductsAll;
+        var cached = await cache.GetAsync<IReadOnlyList<CatalogProductDto>>(cacheKey, cancellationToken);
+        if (cached is not null)
+        {
+            return Result<IReadOnlyList<CatalogProductDto>>.Success(cached);
+        }
+
+        var products = (await catalogs.ListProductsAsync(categoryId, cancellationToken)).Select(MapProduct).ToList();
+        await cache.SetAsync(cacheKey, products, CatalogTtl, cancellationToken);
+
+        return Result<IReadOnlyList<CatalogProductDto>>.Success(products);
+    }
+
     public async Task<Result<CatalogWarmupDto>> WarmupAsync(CancellationToken cancellationToken)
     {
         var categories = await LoadCatalogsAsync(cancellationToken);
         var images = BuildImagesGroups(categories);
+        var products = (await catalogs.ListProductsAsync(null, cancellationToken)).Select(MapProduct).ToList();
 
         await cache.SetAsync(CacheKeys.Catalogs, categories, CatalogTtl, cancellationToken);
         await cache.SetAsync(CacheKeys.CatalogImages, images, CatalogTtl, cancellationToken);
+        await cache.SetAsync(CacheKeys.CatalogProductsAll, products, CatalogTtl, cancellationToken);
 
         return Result<CatalogWarmupDto>.Success(new CatalogWarmupDto(
             categories.Count,
             images.Sum(x => x.Images.Count),
+            products.Count,
             DateTimeOffset.UtcNow));
     }
 
@@ -95,4 +115,30 @@ public sealed class CatalogService(
             image.AltText,
             image.SortOrder,
             image.StorageProvider);
+
+    private static CatalogProductDto MapProduct(Product product) =>
+        new(
+            product.Id,
+            product.ProductNumber,
+            product.Name,
+            product.Slug,
+            product.Description,
+            product.Sku,
+            product.Price,
+            product.CategoryId,
+            product.Category?.Name,
+            product.ProductCategories
+                .OrderBy(x => x.SortOrder)
+                .Select(x => new CatalogProductCategoryDto(
+                    x.CategoryId,
+                    x.Category.Name,
+                    x.Category.Slug,
+                    x.SortOrder,
+                    x.IsFeatured))
+                .ToList(),
+            product.Images
+                .OrderByDescending(x => x.IsPrimary)
+                .ThenBy(x => x.SortOrder)
+                .Select(x => new CatalogProductImageDto(x.Id, x.Url, x.AltText, x.SortOrder, x.IsPrimary))
+                .ToList());
 }

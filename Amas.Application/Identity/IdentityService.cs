@@ -130,10 +130,15 @@ public sealed class IdentityService(
             Description = request.Description.Trim()
         };
 
-        role.RolePermissions = permissions.Select(permission => new RolePermission { Role = role, Permission = permission }).ToList();
+        role.RolePermissions = permissions
+            .Select(permission => new RolePermission { Role = role, PermissionId = permission.Id })
+            .ToList();
 
         await identity.AddRoleAsync(role, cancellationToken);
         await identity.SaveChangesAsync(cancellationToken);
+        role.RolePermissions = permissions
+            .Select(permission => new RolePermission { RoleId = role.Id, PermissionId = permission.Id, Permission = permission })
+            .ToList();
 
         return Result<RoleDto>.Success(MapRole(role));
     }

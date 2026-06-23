@@ -6,5 +6,6 @@ public interface ICatalogService
 {
     Task<Result<IReadOnlyList<CatalogCategoryDto>>> ListAsync(CancellationToken cancellationToken);
     Task<Result<IReadOnlyList<CatalogImagesGroupDto>>> ListImagesAsync(CancellationToken cancellationToken);
+    Task<Result<IReadOnlyList<CatalogProductDto>>> ListProductsAsync(Guid? categoryId, CancellationToken cancellationToken);
     Task<Result<CatalogWarmupDto>> WarmupAsync(CancellationToken cancellationToken);
 }
