@@ -3,6 +3,7 @@ using System;
 using Amas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Amas.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AmasDbContext))]
-    partial class AmasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260623004815_AlignContactRequestNumberIdentity")]
+    partial class AlignContactRequestNumberIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
