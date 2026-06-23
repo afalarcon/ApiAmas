@@ -98,5 +98,5 @@ public sealed class CategoryService(
     }
 
     private static CategoryDto Map(Category category) =>
-        new(category.Id, category.Name, category.Slug, category.Description, category.IsActive);
+        new(category.Id, category.CategoryNumber, category.Name, category.Slug, category.Description, category.IsActive);
 }

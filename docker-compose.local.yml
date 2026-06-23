@@ -1,0 +1,35 @@
+services:
+  amas-postgres-local:
+    image: postgres:17
+    container_name: amas-postgres-local
+    environment:
+      POSTGRES_DB: amas_local
+      POSTGRES_USER: amas_local_user
+      POSTGRES_PASSWORD: amas_local_password
+    ports:
+      - "55432:5432"
+    volumes:
+      - amas_postgres_local_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U amas_local_user -d amas_local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  amas-redis-local:
+    image: redis:7.4-alpine
+    container_name: amas-redis-local
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "amas_local_redis_password"]
+    ports:
+      - "56379:6379"
+    volumes:
+      - amas_redis_local_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "amas_local_redis_password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  amas_postgres_local_data:
+  amas_redis_local_data:

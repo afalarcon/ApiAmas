@@ -23,6 +23,15 @@ public sealed class CatalogsController(ICatalogService catalogs) : ControllerBas
         return Ok(ApiResponse<IReadOnlyList<CatalogImagesGroupDto>>.Success(result.Data!));
     }
 
+    [HttpGet("products")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<CatalogProductDto>>>> GetProducts(
+        [FromQuery] Guid? categoryId,
+        CancellationToken cancellationToken)
+    {
+        var result = await catalogs.ListProductsAsync(categoryId, cancellationToken);
+        return Ok(ApiResponse<IReadOnlyList<CatalogProductDto>>.Success(result.Data!));
+    }
+
     [HttpPost("cache/warmup")]
     [Authorize]
     public async Task<ActionResult<ApiResponse<CatalogWarmupDto>>> Warmup(CancellationToken cancellationToken)

@@ -4,6 +4,7 @@ namespace Amas.Domain.Core;
 
 public sealed class Product : AuditableEntity
 {
+    public long ProductNumber { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;
     public string? Description { get; set; }
@@ -12,5 +13,7 @@ public sealed class Product : AuditableEntity
     public bool IsActive { get; set; } = true;
     public Guid? CategoryId { get; set; }
     public Category? Category { get; set; }
+    public List<ProductCategory> ProductCategories { get; set; } = [];
     public List<ProductImage> Images { get; set; } = [];
+    public InventoryItem? InventoryItem { get; set; }
 }
