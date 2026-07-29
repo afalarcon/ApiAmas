@@ -154,7 +154,12 @@ if (string.Equals(mediaStorageOptions.Provider, "Local", StringComparison.Ordina
     app.UseStaticFiles(new StaticFileOptions
     {
         FileProvider = new PhysicalFileProvider(mediaRoot),
-        RequestPath = GetMediaRequestPath(mediaStorageOptions.PublicBaseUrl)
+        RequestPath = GetMediaRequestPath(mediaStorageOptions.PublicBaseUrl),
+        OnPrepareResponse = context =>
+        {
+            const int cacheDurationSeconds = 31536000;
+            context.Context.Response.Headers.CacheControl = $"public,max-age={cacheDurationSeconds},immutable";
+        }
     });
 }
 
