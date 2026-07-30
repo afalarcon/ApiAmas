@@ -92,7 +92,7 @@ MediaStorage__AllowedContentTypes__1=image/png
 MediaStorage__AllowedContentTypes__2=image/webp
 ```
 
-Con esta configuracion los archivos se guardan en `api/storage/media/categories/{categoryId}/...` y la API los sirve desde `/media/categories/{categoryId}/...`. Para moverlo luego a S3, Azure Blob u otro storage, se cambia la implementacion de `IImageStorage` y se conserva el contrato HTTP.
+Con esta configuracion los archivos se guardan en `storage/media/categories/{categoryId}/...` y la API los sirve desde `/media/categories/{categoryId}/...`. En Docker, `storage/media` debe estar montado como volumen persistente del host para que las imagenes sobrevivan a recreaciones del contenedor. Para moverlo luego a S3, Azure Blob u otro storage, se cambia la implementacion de `IImageStorage` y se conserva el contrato HTTP.
 
 ## Catalogos cacheados para frontend
 
@@ -299,11 +299,21 @@ http://localhost:8080/swagger
 ## Docker en VPS
 
 La API escucha internamente en `8080` y se conecta a las redes externas `amas_net` y `traefik_proxy`.
+Las imagenes se persisten en el host mediante el volumen `./storage/media:/app/storage/media`.
 
 ```bash
 cp deploy/env/production.env.example .env
 docker compose up -d --build
 ```
+
+Si el contenedor actual tiene imagenes en `/app/storage/media` y todavia no existe el volumen, copiarlas al host antes de recrear el contenedor:
+
+```bash
+mkdir -p /opt/amas-api/storage/media
+docker cp amas-api:/app/storage/media/. /opt/amas-api/storage/media/
+```
+
+Luego ejecutar el despliegue desde `/opt/amas-api`. No borrar `storage/`; el workflow la excluye del `rsync`.
 
 Ejecutar migraciones desde el host o desde un contenedor SDK apuntando a la misma red. Ejemplo local:
 

@@ -42,7 +42,7 @@ jobs:
     env:
       VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
       VPS_API_DIR: ${{ vars.VPS_API_DIR || '/opt/amas-api' }}
-      RUN_API_MIGRATIONS: ${{ vars.RUN_API_MIGRATIONS || 'true' }}
+      RUN_API_MIGRATIONS: ${{ vars.RUN_API_MIGRATIONS || 'false' }}
 
     steps:
       - name: Checkout
@@ -68,7 +68,7 @@ jobs:
           set -euo pipefail
 
           ssh -i ~/.ssh/amas_vps -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" \
-            "mkdir -p '$VPS_API_DIR'"
+            "mkdir -p '$VPS_API_DIR/storage/media'"
 
           ssh -i ~/.ssh/amas_vps -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" \
             "docker network inspect amas_net >/dev/null 2>&1 || docker network create amas_net"

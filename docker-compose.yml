@@ -8,6 +8,8 @@ services:
       - .env
     ports:
       - "8080:8080"
+    volumes:
+      - ./storage/media:/app/storage/media
     networks:
       - amas_net
       - traefik_proxy
